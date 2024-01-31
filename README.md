@@ -1,6 +1,6 @@
 # Storyblok Hotspots 🎯
 
-A custom field for Storyblok to place hotspots on an image.
+A custom field for [Storyblok](https://www.storyblok.com/) to place hotspots on an image.
 
 ![Screenshot](screenshot.png)
 

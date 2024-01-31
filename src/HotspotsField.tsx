@@ -1,17 +1,18 @@
 import { MouseEvent, useEffect, useState } from "react";
-
-import { useFieldPlugin } from "@storyblok/field-plugin/react";
-import { Asset } from "@storyblok/field-plugin";
+import {
+  Asset,
+  FieldPluginActions,
+  FieldPluginData,
+} from "@storyblok/field-plugin";
 import { HotspotMarker } from "./HotspotMarker";
-import { HotspotImage, isHotspotImage, Hotspot } from "./types";
+import { Hotspot, HotspotFieldContent } from "./types";
 import { ImageIcon, ReplaceIcon, TrashIcon } from "./icons";
 
-export function HotspotsField() {
-  const { type, data, actions } = useFieldPlugin<HotspotImage | null>({
-    validateContent: (value: unknown) => ({
-      content: isHotspotImage(value) ? value : null,
-    }),
-  });
+type Props = {
+  data: FieldPluginData<HotspotFieldContent>;
+  actions: FieldPluginActions<HotspotFieldContent>;
+};
+export function HotspotsField({ data, actions }: Props) {
   const color = data?.options.color;
   const [asset, setAsset] = useState<Asset | undefined>(data?.content?.asset);
   const [hotSpots, setHotspots] = useState<Hotspot[]>(
@@ -26,14 +27,10 @@ export function HotspotsField() {
     return () => document.removeEventListener("mouseup", stopMoving);
   });
 
-  if (type !== "loaded") {
-    return null;
-  }
-
   const updateHotspots = (update: (prevValue: Hotspot[]) => Hotspot[]) => {
     setHotspots((prevValue) => {
       const newValue = update(prevValue);
-      actions.setContent(asset ? { asset, hotspots: newValue } : null);
+      actions.setContent(asset ? { asset, hotspots: newValue } : undefined);
       return newValue;
     });
   };
@@ -64,7 +61,7 @@ export function HotspotsField() {
   const removeAsset = async () => {
     setAsset(undefined);
     setHotspots([]);
-    actions.setContent(null);
+    actions.setContent(undefined);
   };
 
   if (asset) {

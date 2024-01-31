@@ -1,5 +1,5 @@
 import { isAsset } from "@storyblok/field-plugin";
-import { TypeFromSchema, typeGuard, union } from "type-assurance";
+import { TypeFromSchema, optional, typeGuard } from "type-assurance";
 
 const hotspotSchema = {
   x: Number,
@@ -8,10 +8,12 @@ const hotspotSchema = {
 
 export type Hotspot = TypeFromSchema<typeof hotspotSchema>;
 
-const hotspotImageSchema = {
+const imageSchema = {
   asset: isAsset,
   hotspots: [hotspotSchema],
 };
+export type HotspotImage = TypeFromSchema<typeof imageSchema>;
 
-export type HotspotImage = TypeFromSchema<typeof hotspotImageSchema>;
-export const isHotspotImage = typeGuard(union(hotspotImageSchema, null));
+const contentSchema = optional(imageSchema);
+export type HotspotFieldContent = TypeFromSchema<typeof contentSchema>;
+export const isHotspotFieldContent = typeGuard(contentSchema);

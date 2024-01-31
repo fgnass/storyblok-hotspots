@@ -9,7 +9,7 @@ const hotspotSchema = {
 export type Hotspot = TypeFromSchema<typeof hotspotSchema>;
 
 const hotspotImageSchema = {
-  image: isAsset,
+  asset: isAsset,
   hotspots: [hotspotSchema],
 };
 

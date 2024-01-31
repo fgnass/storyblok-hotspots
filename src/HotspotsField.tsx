@@ -13,8 +13,10 @@ export function HotspotsField() {
     }),
   });
   const color = data?.options.color;
-  const [asset, setAsset] = useState<Asset | undefined>();
-  const [hotSpots, setHotspots] = useState<Hotspot[]>([]);
+  const [asset, setAsset] = useState<Asset | undefined>(data?.content?.asset);
+  const [hotSpots, setHotspots] = useState<Hotspot[]>(
+    data?.content?.hotspots ?? []
+  );
   const [moving, setMoving] = useState<number | null>(null);
 
   useEffect(() => {
@@ -31,7 +33,7 @@ export function HotspotsField() {
   const updateHotspots = (update: (prevValue: Hotspot[]) => Hotspot[]) => {
     setHotspots((prevValue) => {
       const newValue = update(prevValue);
-      actions.setContent(asset ? { image: asset, hotspots: newValue } : null);
+      actions.setContent(asset ? { asset, hotspots: newValue } : null);
       return newValue;
     });
   };

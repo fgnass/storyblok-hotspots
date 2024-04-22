@@ -6,7 +6,13 @@ import {
 } from "@storyblok/field-plugin";
 import { HotspotMarker } from "./HotspotMarker";
 import { Hotspot, HotspotFieldContent } from "./types";
-import { ImageIcon, ReplaceIcon, TrashIcon } from "./icons";
+import {
+  CollapseIcon,
+  ExpandIcon,
+  ImageIcon,
+  ReplaceIcon,
+  TrashIcon,
+} from "./icons";
 
 type Props = {
   data: FieldPluginData<HotspotFieldContent>;
@@ -66,7 +72,7 @@ export function HotspotsField({ data, actions }: Props) {
 
   if (asset) {
     return (
-      <>
+      <div className={data.isModalOpen ? "modal" : "field"}>
         <div
           className="image-wrapper"
           onClick={addHotspot}
@@ -105,18 +111,23 @@ export function HotspotsField({ data, actions }: Props) {
             <button onClick={removeAsset}>
               <TrashIcon />
             </button>
+            <button onClick={() => actions.setModalOpen(!data.isModalOpen)}>
+              {data.isModalOpen ? <CollapseIcon /> : <ExpandIcon />}
+            </button>
           </div>
         </div>
-      </>
+      </div>
     );
   }
   return (
-    <button className="empty" onClick={handleSelectAsset}>
-      <div className="placeholder">
-        <ImageIcon />
-      </div>
-      <div className="label">+ Add Asset</div>
-    </button>
+    <div className="field">
+      <button className="empty" onClick={handleSelectAsset}>
+        <div className="placeholder">
+          <ImageIcon />
+        </div>
+        <div className="label">+ Add Asset</div>
+      </button>
+    </div>
   );
 }
 
@@ -131,8 +142,10 @@ function clamp(v: number, min = 0, max = 1) {
 
 function getCoords(ev: MouseEvent<HTMLElement>) {
   const { clientX, clientY, currentTarget } = ev;
+  console.log(ev);
   const { offsetWidth, offsetHeight, offsetLeft, offsetTop } = currentTarget;
+  const { scrollTop } = currentTarget.parentElement!;
   const x = round(clamp((clientX - offsetLeft) / offsetWidth));
-  const y = round(clamp((clientY - offsetTop) / offsetHeight));
+  const y = round(clamp((clientY - offsetTop + scrollTop) / offsetHeight));
   return { x, y };
 }
